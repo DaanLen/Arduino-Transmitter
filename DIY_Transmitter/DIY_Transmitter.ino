@@ -26,7 +26,7 @@
 
 //Initialise Radio
 RF24 radio(7, 10); //CE, CSN
-const byte adress[6] = "000001";
+const byte adress[6] = "00001";
 
 //Initialise LCD
 LiquidCrystal_I2C lcd(0x27,16,2); //Initialise LCD Connection (needs to be connected to I2C pins SDA SCL which are pins 2 and 3 respectively on Pro Micro)
