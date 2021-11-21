@@ -21,7 +21,14 @@
 
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
+#include <SPI.h>
+#include <RF24.h>
 
+//Initialise Radio
+RF24 radio(7, 10); //CE, CSN
+const byte adress[6] = "000001";
+
+//Initialise LCD
 LiquidCrystal_I2C lcd(0x27,16,2); //Initialise LCD Connection (needs to be connected to I2C pins SDA SCL which are pins 2 and 3 respectively on Pro Micro)
 
 //Define Pins
@@ -61,7 +68,14 @@ byte incoming = 0;
 byte incoming2 = 0;
 
 void setup() {
-  Serial.begin(9600);
+  //Serial.begin(9600);
+
+  //Setup radio
+  radio.begin();
+  radio.openWritingPipe(address);
+  radio.setPALevel(RF24_PA_MIN);
+  radio.stopListening();
+  
   //Setup Joystick connections
   pinMode(JoyThrtl_Con, INPUT);
   pinMode(JoyYaw_Con, INPUT);
@@ -80,17 +94,19 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-//  updateLCD();
- pollJoy();
- mapJoy();
- readRot();
- //read_shift_regs();
- updatePullRegister();
-    
+  //  updateLCD();
+  pollJoy();
+  mapJoy();
+  readRot();
+  //read_shift_regs();
+  //updatePullRegister();
+
+  const char text[] = "Radio Check";
+  radio.write(&text, sizeof(text));
   // Print to serial monitor
-  Serial.print(incoming);
-  Serial.println(incoming2);
-  delay(200);
+  //Serial.print(incoming);
+  //Serial.println(incoming2);
+  delay(400);
 
 }
 
