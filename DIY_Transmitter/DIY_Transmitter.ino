@@ -25,8 +25,8 @@
 #include <RF24.h>
 
 //Initialise Radio
-RF24 radio(7, 10); //CE, CSN
-const byte adress[6] = "00001";
+RF24 radio(10, 7); //CE, CSN
+const byte address[6] = "00001";
 
 //Initialise LCD
 LiquidCrystal_I2C lcd(0x27,16,2); //Initialise LCD Connection (needs to be connected to I2C pins SDA SCL which are pins 2 and 3 respectively on Pro Micro)
@@ -68,7 +68,7 @@ byte incoming = 0;
 byte incoming2 = 0;
 
 void setup() {
-  //Serial.begin(9600);
+  Serial.begin(9600);
 
   //Setup radio
   radio.begin();
@@ -101,20 +101,23 @@ void loop() {
   //read_shift_regs();
   //updatePullRegister();
 
+  int Joysticks[] = {Throttle, Yaw, Pitch, Roll};
   const char text[] = "Radio Check";
-  radio.write(&text, sizeof(text));
+  radio.write(&Joysticks, sizeof(Joysticks));
   // Print to serial monitor
   //Serial.print(incoming);
   //Serial.println(incoming2);
+  Serial.println(Joysticks[1]);
   delay(400);
+  
 
 }
 
 void mapJoy(){
-  Throttle = map(JoyThrtl_Pos, 107, 892, 0, 511); //0 at throttle off, 511 at max throttle
-  Yaw = map(JoyYaw_Pos, 150, 880, 0, 511);        //0 at full left, 511 at full right
-  Pitch = map(JoyPitch_Pos, 120, 838, 0, 511);    //0 at nose down, 511 at nose up
-  Roll = map(JoyRoll_Pos, 125, 880, 0, 511);      //0 at bank right, 511 at bank left
+  Throttle = map(JoyThrtl_Pos, 107, 892, 0, 255); //0 at throttle off, 255 at max throttle
+  Yaw = map(JoyYaw_Pos, 150, 880, 0, 255);        //0 at full left, 255 at full right
+  Pitch = map(JoyPitch_Pos, 120, 838, 0, 255);    //0 at nose down, 255 at nose up
+  Roll = map(JoyRoll_Pos, 125, 880, 0, 255);      //0 at bank right, 255 at bank left
 }
 
 void pollJoy(){
