@@ -51,18 +51,18 @@ int dataIn = 5;
 int clockIn = 6;
 
 //Set initial values
-int JoyThrtl_Pos  = 0;
-int JoyYaw_Pos    = 0;
-int JoyPitch_Pos  = 0;
-int JoyRoll_Pos   = 0;
+uint16_t JoyThrtl_Pos  = 0;
+uint16_t JoyYaw_Pos    = 0;
+uint16_t JoyPitch_Pos  = 0;
+uint16_t JoyRoll_Pos   = 0;
 
-int Throttle      = 0;
-int Yaw           = 0;
-int Roll          = 0;
-int Pitch         = 0;
+uint16_t Throttle      = 0;
+uint16_t Yaw           = 0;
+uint16_t Roll          = 0;
+uint16_t Pitch         = 0;
 
-int Rot_Left      = 0;
-int Rot_Right      = 0;
+uint16_t Rot_Left      = 0;
+uint16_t Rot_Right      = 0;
 
 byte incoming = 0;
 byte incoming2 = 0;
@@ -88,7 +88,7 @@ void setup() {
   pinMode(clockIn, OUTPUT);
   pinMode(dataIn, INPUT);
 
-  //lcd.init();
+  lcd.init();
   //lcd.backlight();
 }
 
@@ -101,23 +101,25 @@ void loop() {
   //read_shift_regs();
   //updatePullRegister();
 
-  int Joysticks[] = {Throttle, Yaw, Pitch, Roll};
+  uint16_t Controls[] = {Throttle, Yaw, Pitch, Roll, Rot_Left, Rot_Right};
   const char text[] = "Radio Check";
-  radio.write(&Joysticks, sizeof(Joysticks));
+  radio.write(&Controls, sizeof(Controls));
   // Print to serial monitor
   //Serial.print(incoming);
   //Serial.println(incoming2);
-  Serial.println(Joysticks[1]);
+  int test = sizeof(Controls);
+  Serial.print(test);
+  Serial.println(Controls[4]);
   delay(400);
   
 
 }
 
 void mapJoy(){
-  Throttle = map(JoyThrtl_Pos, 107, 892, 0, 255); //0 at throttle off, 255 at max throttle
-  Yaw = map(JoyYaw_Pos, 150, 880, 0, 255);        //0 at full left, 255 at full right
-  Pitch = map(JoyPitch_Pos, 120, 838, 0, 255);    //0 at nose down, 255 at nose up
-  Roll = map(JoyRoll_Pos, 125, 880, 0, 255);      //0 at bank right, 255 at bank left
+  Throttle = map(JoyThrtl_Pos, 107, 892, 0, 511); //0 at throttle off, 255 at max throttle
+  Yaw = map(JoyYaw_Pos, 150, 880, 0, 511);        //0 at full left, 255 at full right
+  Pitch = map(JoyPitch_Pos, 120, 838, 0, 511);    //0 at nose down, 255 at nose up
+  Roll = map(JoyRoll_Pos, 125, 880, 0, 511);      //0 at bank right, 255 at bank left
 }
 
 void pollJoy(){
@@ -137,8 +139,8 @@ void pollJoy(){
 }
 
 void readRot(){
-  Rot_Left  = analogRead(Rot_LeftPin);
-  Rot_Right = analogRead(Rot_RightPin);
+  Rot_Left  = analogRead(Rot_LeftPin); //0-1023
+  Rot_Right = analogRead(Rot_RightPin); //0-1023
 }
 
 void read_shift_regs(){
