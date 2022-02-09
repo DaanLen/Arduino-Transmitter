@@ -108,9 +108,8 @@ void loop() {
   //Serial.print(incoming);
   //Serial.println(incoming2);
   int test = sizeof(Controls);
-  Serial.print(test);
-  Serial.println(Controls[4]);
-  delay(400);
+  Serial.println(Controls[0]);
+  delay(5);
   
 
 }
